@@ -1,0 +1,212 @@
+<table id="topicInfo"></table>
+<script>
+$(function(){
+	$('#topicInfo').datagrid({   
+	    url:'../topicServlet?op=showTopics&time='+new Date().getTime(),
+	    fitColumns:true,
+	    striped:true,
+	    nowrap:true,
+	    loadMsg:'数据正在加载，请稍后...', 
+	    pagination:true,
+	    rownumbers:true,
+	    //sortName:'tid',
+	    //sortOrder:'desc',
+	    //remoteSort:false,
+	    columns:[[   
+	        {field:'tid',title:'选择',width:100,checkbox:true},   
+	        {field:'tname',title:'新闻类型名称',width:200,sortable:true}   
+	    ]],
+	    
+	    //工具栏
+	    toolbar: [{
+	    	text:'添加新闻类型',
+			iconCls: 'icon-add',
+			handler: function(){
+				addNewsTopic();
+			}
+		},'-',{
+			text:'修改新闻类型',
+			iconCls: 'icon-edit',
+			handler: function(){
+				updateNewsTopic();
+			}
+		},'-',{
+			text:'删除新闻类型',
+			iconCls: 'icon-remove',
+			handler: function(){
+				delNewsTopic();
+			}
+		}]
+	      
+	}); 
+	
+	//分页控件 
+	var mypage=$("#topicInfo").datagrid('getPager');
+	$(mypage).pagination({
+		pageNumber:1,  //初始页数
+		pageSize:10, //默认每页显示的条数
+		pageList:[10,20,30],  //每页显示的记录数选项
+		beforePageText:'第',
+		afterPageText:'页  共 {pages} 页',
+		displayMsg:'当前显示 {from}-{to} 条记录   共 {total} 条记录 '
+	});
+})
+
+
+function addNewsTopic(){
+	$("#topicName").val("");
+	$("#addTopics").dialog('open');
+}
+
+//添加新闻类型
+function addTopicInfo(){
+	var tname=$.trim( $("#topicName").val() );
+	if(tname==""){
+		return;
+	}else{
+		$.post("../topicServlet?time="+new Date().getTime(),{op:"addTopic",tname:tname},function(data){
+			data=parseInt( $.trim(data) );
+			if(data==1){
+				$.messager.show({
+					title:'成功提示',
+					msg:'新闻类型添加成功...',
+					timeout:2000,
+					showType:'slide'
+				});
+				//关闭添加信息窗口
+				$("#addTopics").dialog('close');
+				
+				//刷新数据
+				$("#topicInfo").datagrid('load',{});
+			}else{
+				$.messager.alert('失败提示','新闻类型添加失败...','error');
+				$("#topicInfo").datagrid('load',{});
+			}
+		});
+	}
+}
+
+	
+//显示修改对话框
+function updateNewsTopic(){
+	//选取要修改的数据
+	var rows=$("#topicInfo").datagrid('getChecked');
+		
+	//判断有没有选择要修改的数据
+	if(rows.length<=0){ //说明用户没有选择数据
+		$.messager.show({
+			title:'错误提示',
+			msg:'请选择您要修改的数据...',
+			timeout:2000,
+			showType:'slide'
+		});
+		return;
+	}
+		
+	//如果用户有选择数据，则选取用户选定的第一条要修改的数据，并将其原值显示在对话框中
+	var tid=rows[0].tid;
+	var tname=rows[0].tname;
+	
+	$("#utid").val(tid);
+	$("#utname").val(tname);
+	
+	$("#updateTopics").dialog('open');
+}
+	
+//修改
+function updateTopicInfo(){
+	var tname=$.trim( $("#utname").val() );
+	var tid=$.trim( $("#utid").val() );
+	if(tname==""){
+		return;
+	}else{
+		$.post("../topicServlet?time="+new Date().getTime(),{op:"updateTopic",tname:tname,tid:tid},function(data){
+			data=parseInt( $.trim(data) );
+			if(data==1){
+				$.messager.show({
+					title:'成功提示',
+					msg:'新闻类型修改成功....',
+					timeout:2000,
+					showType:'slide'
+				});
+				//关闭添加信息窗口
+				$("#updateTopics").dialog('close');
+				
+				//刷新数据
+				$("#topicInfo").datagrid('load',{});
+			}else{
+				$.messager.alert('失败提示','新闻类型修改失败...','error');
+				$("#topicInfo").datagrid('load',{});
+			}
+		});
+	}
+}
+
+function delNewsTopic(){
+	//选取要删除的数据
+	var rows=$("#topicInfo").datagrid('getChecked');
+		
+	//判断有没有选择要删除的数据
+	if(rows.length<=0){ //说明用户没有选择数据
+		$.messager.show({
+			title:'错误提示',
+			msg:'请选择您要删除的数据...',
+			timeout:2000,
+			showType:'slide'
+		});
+		return;
+	}
+		
+	//如果用户有选择数据，警告用户小心操作
+	$.messager.confirm("确认提示","数据一旦删除，将不能恢复，您确定要删除选定数据吗?",function(rt){
+		if(rt){
+			//获取用户选中的所有数据的id in(1001,1002)
+			var tid="";
+			for(var i=0;i<rows.length-1;i++){
+				tid+=rows[i].tid+",";
+			}
+			tid+=rows[i].tid;
+			
+			$.post("../topicServlet?time="+new Date().getTime(),{op:"delTopic",tid:tid},function(data){
+				data=parseInt( $.trim(data) );
+				if(data==1){
+					$.messager.show({
+						title:'成功提示',
+						msg:'新闻类型删除成功...',
+						timeout:2000,
+						showType:'slide'
+					});
+					
+					//刷新数据
+					$("#topicInfo").datagrid('load',{});
+				}else{
+					$.messager.alert('失败提示','新闻类型删除失败...','error');
+					$("#topicInfo").datagrid('load',{});
+				}
+			});
+			
+			
+		}else{
+			return;
+		}
+	});
+	
+}
+
+</script>
+
+<div id="addTopics" class="easyui-dialog" title="添加新闻类型" style="width:400px;height:200px;text-align:center"  
+        data-options="iconCls:'icon-add',resizable:true,modal:true,closed:true">  
+      <br />
+      类型名称：<input type="text" id="topicName" /><br /><br />
+      <input type="button" value="添加" onclick="addTopicInfo()"/>
+</div>  
+
+
+<div id="updateTopics" class="easyui-dialog" title="修改新闻类型" style="width:400px;height:200px;text-align:center"  
+        data-options="iconCls:'icon-add',resizable:true,modal:true,closed:true">  
+      <br />
+      <input type="hidden" id="utid"/>
+      类型名称：<input type="text" id="utname" /><br /><br />
+      <input type="button" value="修改" onclick="updateTopicInfo()"/>
+</div> 

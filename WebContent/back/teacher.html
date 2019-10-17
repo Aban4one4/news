@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>教师客户端</title>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+
+<link id="easyuiTheme" rel="stylesheet" type="text/css"
+	href="../jslib/themes/default/easyui.css">
+<link rel="stylesheet" href="../css/extreme.css" type="text/css"></link>
+<link rel="stylesheet" type="text/css" href="../jslib/themes/icon.css">
+<script type="text/javascript" src="../jslib/jquery.min.js"></script>
+<script type="text/javascript" src="../jslib/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../jslib/jeasyui.common.js"></script>
+<link rel="stylesheet" href="../css/szindex.css" type="text/css"></link>
+<script type="text/javascript" src="../js/createoption.js"></script>
+<script type="text/javascript" src="../js/ajax.js"></script>
+<script type="text/javascript" src="../jslib/locale/easyui-lang-zh_CN.js"></script>
+
+
+<link href="../css/szindex.css" type=text/css rel=stylesheet>
+<script type="text/javascript" language="javascript"
+	src="../js/creatXML.js"></script>
+<script type="text/javascript" language="javascript"
+	src="../js/sendrequest.js"></script>
+<script type="text/javascript" src="../js/check.js"></script>
+
+
+<script type="text/javascript">
+
+	//禁止直接登录
+	//location.href="../doLogin.jsp";//不用过滤器
+	
+	$(function() {
+	
+		$.post("../loginServlet.do",{op:"islogin"},function(data) {
+			var a=data.split("+");
+			var flag = a[0];
+			var uname = a[1];
+			if (flag == "true") {
+				var unameStr = "";
+				unameStr += '教员：[<strong>' + uname
+						+ '</strong>]，欢迎您进入源辰在线考试系统！';
+				$("#sessionInfoDiv").html(unameStr);
+				$("#updateUname").val(uname);
+			} else {
+				location.href = "/StudySelf/";
+			}
+		});
+
+		$("#back_mainTab").tabs('add', {
+			title : '主界面',
+			closable : true,
+			href : '/StudySelf/back/welcome.html'
+		});
+	});
+
+	//格式化日期
+	$.fn.datebox.defaults.formatter = function(date) {
+		var y = date.getFullYear();
+		var m = date.getMonth() + 1;
+		var d = date.getDate();
+		return y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+	}
+
+	$.extend($.fn.layout.methods, {
+		full : function(jq) {
+			return jq.each(function() {
+				var layout = $(this);
+				var center = layout.layout('panel', 'center');
+				center.panel('maximize');
+				center.parent().css('z-index', 10);
+
+				$(window).on('resize.full', function() {
+					layout.layout('unFull').layout('resize');
+				});
+			});
+		},
+		unFull : function(jq) {
+			return jq.each(function() {
+				var center = $(this).layout('panel', 'center');
+				center.parent().css('z-index', 'inherit');
+				center.panel('restore');
+				$(window).off('resize.full');
+			});
+		}
+	});
+
+	//全屏显示中间部分
+	function full() {
+		$("body").layout("full");
+
+	}
+	function unFull() {
+		$("body").layout("unFull");
+
+	}
+
+	function addTab(title, iconCls, closable, href, content) {
+		var tab = $("#back_mainTab");
+		if (href == null || href == "") {
+			//判断这个obj中的title是否已经在tab中存在
+			if (tab.tabs('exists', title)) {
+				tab.tabs('select', title);
+			} else {
+				tab.tabs('add', {
+					title : title,
+					iconCls : iconCls,
+					closable : closable,
+					content : content,
+				});
+			}
+		} else if (content == null || content == "") {
+			if (tab.tabs('exists', title)) {
+				tab.tabs('select', title);
+			} else {
+				tab.tabs('add', {
+					title : title,
+					iconCls : iconCls,
+					closable : closable,
+					href : href
+				});
+			}
+		}
+	}
+</script>
+</head>
+<body class="easyui-layout">
+	<!-- 头部 -->
+	<div data-options="region:'north',border:false" style="height:83px;">
+		<img style="padding-left: 80px;" height="80px" width="337px"
+			class="mainpage_head_img" alt="公司logo"
+			src="/StudySelf/images/1_logo.png" />
+
+		<div id="sessionInfoDiv"
+			style="position: absolute;right: 5px;top:25px;">
+			<!-- 登录界面 -->
+		</div>
+		<div style="position: absolute; right: 0px; bottom: 5px; ">
+			<a href="javascript:void(0);" class="easyui-menubutton"
+				data-options="menu:'#layout_north_kzmbMenu',iconCls:'icon-help'">信息中心</a>
+			<a href="javascript:void(0);" class="easyui-menubutton"
+				data-options="menu:'#layout_north_zxMenu',iconCls:'icon-back'">注销</a>
+		</div>
+		<div id="layout_north_kzmbMenu" style="width: 100px; display: none;">
+			<div onclick="userInfoFun();">修改密码</div>
+			<div class="menu-sep"></div>
+			<!-- <div onclick="aboutUs();">联系我们</div> -->
+		</div>
+		<div id="personalInfo" class="easyui-dialog" title="修改密码"
+			data-options="modal:true,closed:true,buttons:[{
+				text:'确认',
+				handler:function(){
+					//确认修改密码
+					var updateUname=$('#updateUname').val();
+					var oldPassword=$('#oldPassword').val();
+					var newPassword=$('#newPassword').val();
+					var newPasswordAgain=$('#newPasswordAgain').val();
+					if(newPassword==newPasswordAgain){
+						$.getJSON('../loginServlet.do', {op:'updatePwd',oldPwd:oldPassword,newPwd:newPassword}, function(data) {
+							if(data==0){
+								//data为0，表示修改密码不成功，原密码不正确
+								//清空密码框
+								$('#oldPassword').val('');
+								$('#newPassword').val('');
+								$('#newPasswordAgain').val('');
+								alert('修改密码不成功，原密码不正确');
+								return;
+							}else if(data==1){
+								//data为1，表示修改密码成功
+								//清空密码框
+								$('#oldPassword').val('');
+								$('#newPassword').val('');
+								$('#newPasswordAgain').val('');
+								alert('修改密码成功');
+								$('#personalInfo').window('close');
+							}else if(data==2){
+								//data为2，表示修改密码失败
+								//清空密码框
+								$('#oldPassword').val('');
+								$('#newPassword').val('');
+								$('#newPasswordAgain').val('');
+								alert('修改密码失败');
+								$('#personalInfo').window('close');
+							}
+						});
+					}else{
+						alert('两次输入密码不一致，请重新输入');
+						//清空密码框
+						$('#newPassword').val('');
+						$('#newPasswordAgain').val('');
+						return;
+					}
+				}
+			},{
+				text:'重置',
+				handler:function(){
+					//取消修改密码
+					//实现方法就是清空所有的文本框
+					$('#oldPassword').val('');
+					$('#newPassword').val('');
+					$('#newPasswordAgain').val('');
+				}
+			}]"
+			style="width:400px;height:260px;padding:20px;">
+			<table cellpadding="5" align="center">
+				<tr>
+					<td>用户名:</td>
+					<td><input class="easyui-validatebox textbox" type="text"
+						id="updateUname" style="background:#F5F5F5;" disabled="disabled"></input>
+					</td>
+				</tr>
+				<tr>
+					<td>原密码:</td>
+					<td><input class="easyui-validatebox textbox" type="password"
+						id="oldPassword" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<td>新密码:</td>
+					<td><input class="easyui-validatebox textbox" type="password"
+						id="newPassword" data-options="required:true"></input></td>
+				</tr>
+				<tr>
+					<td>确认新密码:</td>
+					<td><input class="easyui-validatebox textbox" type="password"
+						id="newPasswordAgain" data-options="required:true"></input></td>
+				</tr>
+			</table>
+		</div>
+		<div id="layout_north_zxMenu" style="width: 100px; display: none;">
+			<div onclick="ReLogin();">重新登录</div>
+			<div class="menu-sep"></div>
+			<div onclick="logoutFun();">退出系统</div>
+		</div>
+		<div id="reLoginInfo" class="easyui-dialog" title="提示"
+			style="width:400px;height:200px;"
+			data-options="modal:true,closed:true,closable:false,
+			buttons:[{
+				text:'确定',
+				handler:function(){
+					//确定退出
+					location.href='/StudySelf/login.html';
+				}
+			},{
+				text:'取消',
+				handler:function(){
+					//取消退出
+					$('#reLoginInfo').window('close');
+				}
+			}]">
+			<p
+				style="line-height: 70px; color: red; font-size: 24px; font-family: 华文行楷; text-align: center;">您确定要重新登录吗？</p>
+		</div>
+		<div id="logoutInfo" class="easyui-dialog" title="提示"
+			style="width:400px;height:200px;"
+			data-options="modal:true,closed:true,closable:false,
+			buttons:[{
+				text:'确定',
+				handler:function(){
+					//确定退出
+					//$.getJSON('/StudySelf/login_exit.action', function(data) {
+					$.getJSON('../loginServlet.do', {op:'exit'},function(data) {
+						if (data==0) {
+							location.replace('../login.html');
+						} else {
+							$('#sessionInfoDiv').html('');
+						}
+					});
+				}
+			},{
+				text:'取消',
+				handler:function(){
+					//取消退出
+					$('#logoutInfo').window('close');
+				}
+			}]">
+			<p
+				style="line-height: 70px; color: red; font-size: 24px; font-family: 华文行楷; text-align: center;">您确定要退出系统吗？</p>
+		</div>
+	</div>
+
+	<!-- 西边 -->
+	<div data-options="region:'west',split:true,title:'导航菜单'"
+		style="width:150px;">
+		<div id="aa" class="easyui-accordion"
+			data-options="fit:true,border:false">
+			<div title="公告管理"
+				data-options="iconCls:'icon-mini-add',selected:true"
+				style="overflow:auto;padding:10px;">
+				<ul id="tt" class="easyui-tree">
+					<li><a href="#"
+							onclick="javascript:addTab('公告管理','icon-mini-add',true,'','<iframe src=noticemanagement.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">公告管理</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('学生录入','icon-mini-add',true,'','<iframe src=StudentRegister.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">学生录入</a>
+					</li>
+				</ul>
+			</div>
+			<div title="教学管理"
+				data-options="iconCls:'icon-mini-add',selected:false"
+				style="padding:10px;">
+				<ul id="tt" class="easyui-tree">
+					<li><a href="#"
+						onclick="javascript:addTab('课程管理','icon-mini-add',true,'','<iframe src=coursemanagement.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">课程管理</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('作业管理','icon-mini-add',true,'','<iframe src=workmanage.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">作业管理</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('自测试题管理','icon-mini-add',true,'','<iframe src=testpaper.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">自测试题管理</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('试题录入','icon-mini-add',true,'','<iframe src=edittest.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">试题录入</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('平时成绩管理','icon-mini-add',true,'','<iframe src=grade.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">平时成绩管理</a>
+					</li>
+					<li><a href="#"
+						onclick="javascript:addTab('在线答疑','icon-mini-add',true,'','<iframe src=onlineAnswer.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">在线答疑</a>
+					</li>
+				</ul>
+			</div>
+			<div title="试题录入"
+				data-options="iconCls:'icon-mini-add',selected:false"
+				style="padding:10px;">
+				<li><a href="#"
+						onclick="javascript:addTab('试题录入','icon-mini-add',true,'','<iframe src=entertest.html  frameborder=0 style=border:0;width:100%;height:99.5%;></iframe>')">试题录入</a>
+					</li>
+			</div>
+		</div>
+	</div>
+
+	<!-- 东边 -->
+	<div data-options="region:'east',split:true,title:'工具箱'"
+		style="width:170px;padding:10px;">
+		<div class="easyui-calendar" style="width:150px;height:150px;"></div>
+	</div>
+	<!-- 南边 -->
+	<div data-options="region:'south',border:false"
+		style="height:30px;padding:10px;">
+		<center>衡阳源辰信息科技有限公司</center>
+	</div>
+	<!-- 中间 -->
+	<div id="cc"
+		data-options="region:'center',title:'主操作区',
+			 tools: [{   
+        		iconCls:'icon-full',
+       			handler:function(){full()}   
+    		},{   
+        		iconCls:'icon-unfull',
+       			handler:function(){unFull()}   
+    		}]">
+		<div id="back_mainTab" class="easyui-tabs" data-options="fit:true">
+		</div>
+
+	</div>
+</body>
+</html>

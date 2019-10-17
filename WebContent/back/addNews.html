@@ -1,0 +1,71 @@
+<div class="add_news">
+	<div style="width:100%;height:280px">	
+		<form action="../newsServlet?op=addNews" method="post" enctype="multipart/form-data" onsubmit="return checkAddNews()">
+		<ul>
+			<li>
+				<label>新闻类型：</label>
+				<select name="ntid" id="ntid" class="myinput1">
+				
+				</select>
+				<input type="submit" value=" 添 加 " class="mybtn1" />
+			</li>
+			<li>
+				<label>新闻标题：</label>
+				<input type="text" name="ntitle" id="ntitle" class="myinput1" />
+			</li>
+			<li>
+				<label>作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;者：</label>
+				<input type="text" name="nauthor" id="nauthor" class="myinput1" />
+			</li>
+			<li>
+				<label>发布日期：</label>
+				<input type="text" name="ncreatedate" id="ncreatedate" class="myinput1" onclick="fPopCalendar(event,this,this)" onfocus="this.select()" readonly="readonly" />
+			</li>
+			<li>
+				<label>新闻图片：</label>
+				<input type="file" name="npicpath" id="npicpath" class="myinput1" onchange="previewImage(this,'preview1','show_img')"/>
+			</li>
+			<li>
+				<label>新闻内容：</label>
+				<textarea rows="5" cols="200" name="ncontent" id="ncontent" style="display:none"></textarea>
+			</li>
+		</ul>
+		</form>
+	</div>
+	<div style="margin-left:40px">
+		<script id="container" name="content" type="text/plain"></script>
+	</div>
+	<div class="show_pic" id="preview1" style="display:none">
+		<img src="" width="160px" height="180px" id="show_img"/>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var ue = UE.getEditor('container');
+	
+	function checkAddNews(){
+		var title=$.trim( $("#ntitle").val() );
+		$("#ncontent").val(ue.getContent()).css("display","block");
+		$("#container").remove();
+		if(title==""){
+			alert("请输入新闻标题...");
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	
+	$(function(){
+		$.post("../topicServlet?time="+new Date().getTime(),{op:"getAllTopic"},function(data){
+			if(data.info!=null){
+				var opt="";
+				var sel=$("#ntid");
+				$.each(data.info,function(index,item){
+					opt="<option value='"+item.tid+"'>"+item.tname+"</option>";
+					sel.append($(opt));
+				});
+			}
+		},"json");
+	});
+</script>

@@ -1,0 +1,163 @@
+@charset "utf-8";
+/* CSS Document */
+.topic_title{
+	width:100%;
+	height:30px;
+	text-align:left;
+	padding-left:160px;
+}
+
+.topic_title label{
+	font-size:14px;
+	height:30px;
+	line-height:30px;
+}
+
+.myinput{
+	width:160px;
+	border:1px solid #F8D81A;
+	font-size:14px;
+}
+
+.mybtn{
+	padding:0px 20px;
+	border:1px solid #F8D81A;
+	font-size:14px;
+}
+
+.mybtn1{
+	padding:0px 20px;
+	border:1px solid #F8D81A;
+	font-size:14px;
+	margin-left:180px;
+}
+
+.mybtn:hover{
+	background:#D9E9AB;
+}
+
+#opt_area table tr{
+	text-align:center;
+	height:30px;
+}
+
+#opt_area td{
+	font-size:14px;
+}
+
+
+#opt_area table tr a{
+	padding:2px 20px;
+	background:#46A546;
+	margin-right:10px;
+	font-size:14px;
+	text-decoration:none;
+}
+
+#opt_area table tr a:hover{
+	background:#34D234;
+}
+
+.add_news{
+	width:96%;
+	position:relative;
+	height:600px;
+}
+
+.add_news label{
+	display:inline-block;
+	width:65px;
+}
+
+.add_news ul{
+	width:100%;
+	position:absolute;
+	
+}
+
+.add_news ul li{
+	margin-top:20px;
+}
+
+.myinput1{
+	width:300px;
+	border:1px solid #F8D81A;
+	font-size:14px;
+}
+
+.show_page_info ul{
+	width:65%;
+	float:right;
+}
+
+.show_page_info ul li{
+	float:left;
+	margin-left:10px;
+}
+
+.show_page_info ul li a{
+	text-decoration:none;
+	display:inline-block;
+	padding:5px 20px;
+	background:#9FE5BD;
+}
+
+#show_page_info{
+	display:inline-block;
+	padding:5px 20px;
+	background:#9FE5BD;
+}
+
+
+.show_page_info li a:hover{
+	background:#E3DD14;
+}
+
+.show_pic{
+	position:absolute;
+	width:200px;
+	height:240px;
+	left:560px;
+	top:65px;
+}
+
+.tishi{
+	padding-left:20px;
+	background:url(../images/onFocus.gif) no-repeat left center;
+	color:blue;
+}
+
+.error{
+	padding-left:20px;
+	background:url(../images/onError.gif) no-repeat left center;
+	color:red;
+}
+
+.correct{
+	padding-left:20px;
+	background:url(../images/onCorrect.gif) no-repeat left center;
+	color:green;
+}
+
+#myNewsInfo ul{
+	list-style-type:none;
+	margin-right:50px;
+}
+
+#myNewsInfo ul li{
+	height:25px;
+	line-height:25px;
+	border-bottom: 1px dashed #ccc;
+}
+
+#newsInfos ul li span{
+	float:right;	
+}
+
+#myNewsInfo ul li:hover{
+	color:red;	
+}
+
+#myNewsInfo .space{
+	border:none;	
+}

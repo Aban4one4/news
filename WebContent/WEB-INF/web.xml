@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<!-- 字符编码集过滤器 -->
+	<filter>
+		<filter-name>characterEncoding</filter-name>
+		<filter-class>com.yc.news.filters.CharacterEncoding</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>characterEncoding</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 页面缓存过滤器 -->
+	<filter>
+		<filter-name>forceNoCacheFilter</filter-name>
+		<filter-class>com.yc.news.filters.ForceNoCacheFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>forceNoCacheFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- 后台安全管理登录过滤
+	<filter>
+		<filter-name>checkLogin</filter-name>
+		<filter-class>com.yc.news.filters.CheckLoginFilter</filter-class>
+		<init-param>
+			<param-name>errorLogin</param-name>
+			<param-value>/admin/login.jsp</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>checkLogin</filter-name>
+		<url-pattern>/back/*</url-pattern>
+	</filter-mapping>
+ 	-->
+	<!-- 前台数据 -->
+	<filter>
+		<filter-name>frontDataFilter</filter-name>
+		<filter-class>com.yc.news.filters.FrontDataFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>frontDataFilter</filter-name>
+		<url-pattern>/front/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>InitDataServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.InitDataServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RegisterServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.RegisterServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>TopicServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.TopicServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.LoginServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>NewsServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.NewsServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>InitServlet</servlet-name>
+		<servlet-class>com.yc.news.servlets.InitServlet</servlet-class>
+		<init-param>
+			<param-name>uploadPath</param-name>
+			<param-value>../dataInfo</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>InitDataServlet</servlet-name>
+		<url-pattern>/initDataServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RegisterServlet</servlet-name>
+		<url-pattern>/registerServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TopicServlet</servlet-name>
+		<url-pattern>/topicServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/loginServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>NewsServlet</servlet-name>
+		<url-pattern>/newsServlet</url-pattern>
+	</servlet-mapping>
+
+	<!-- 错误配置 -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error400.jsp</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error400.jsp</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>java.lang.NullPointerException</exception-type>
+		<location>/error500.jsp</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/error500.jsp</location>
+	</error-page>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

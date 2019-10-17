@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>新闻中国</title>
+<meta charset="utf-8" />
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="0">
+<meta http-equiv="keywords"	content="新闻" />
+<meta http-equiv="description" content="Navy新闻网,为广大人民建立了网络新闻平台,方便用户随时、随地的了解世界的相关动态" />
+<link rel="shortcut icon" href="images/favicon.ico" type="images/x-icon" />
+
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/login.css" />
+
+<script src="js/jquery-1.9.1.js" charset="utf-8"></script>
+<script src="js/login.js" charset="utf-8"></script>
+<script>
+	$(function(){
+		$("#pic").mywin({left:"center",top:"center"});
+		$(".bg").fadeIn("3000","linear");
+		
+		//使用ajax发请求到servlet,准备要显示的数据，当准备完成后，返回一个状态值，当前台拿到
+		//数据准备完成后的状态后，则跳转到显示页面
+		doPost();
+	});
+	var xmlHttp;
+	function createXMLHttpRequest(){
+		if(window.XMLHttpRequest){
+			xmlHttp=new XMLHttpRequest;
+		}else if(window.ActiveXObjet){
+			xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	
+	function doPost(){
+		createXMLHttpRequest();
+		var url="initDataServlet?time="+new Date().getTime();
+		xmlHttp.onreadystatechange=backFunction;
+		xmlHttp.open("POST",url);
+		xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		xmlHttp.send(null);
+	}
+	
+	function backFunction(){
+		if(xmlHttp.readyState==4){
+			if(xmlHttp.status==200){
+				var data=xmlHttp.responseText;
+				if( parseInt(data)==1 ){
+					location.href="front/index.jsp";
+				}else{
+					location.href="error500.jsp";
+				}
+			}else{//如果访问不成功，则跳到错误页面
+				location.href="error500.jsp";
+			}
+		}
+	}
+</script>
+<style>
+	#pic{
+		width: 100px;
+		height:100px;
+		position:absolute;
+	}
+</style>
+</head>
+
+<body>
+	<div id="bg" class="bg" style="display:none;"></div>
+	<div id="pic">
+		<img src="images/loading.gif"/>
+	</div>
+</body>
+</html>
