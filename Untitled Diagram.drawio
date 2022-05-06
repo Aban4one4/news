@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-05-06T03:58:11.479Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="HkVd8c0W2o3be85l0-7B" version="17.1.5" type="github">
+<mxfile host="app.diagrams.net" modified="2022-05-06T06:26:58.765Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="lzDohBRQxvv9WYL2lLnj" version="17.1.5" type="github">
   <diagram id="prtHgNgQTEPvFCAcTncT" name="Page-1">
     <mxGraphModel dx="1422" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -13,7 +13,7 @@
         <mxCell id="Johj8OE83r-ualLdAYy1-4" value="描述:&lt;br&gt;1、整体分为用户(SEC_USER)、角色(SEC_ROLE)、组织(SEC_ORGANIZATION)、权限(SEC_PERMISSIONS)，菜单(SEC_MENU)五张大表。关联关系通过单独的外键关联表关系确定(表名带REF前缀)。" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="100" y="190" width="230" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="Johj8OE83r-ualLdAYy1-5" value="描述:&lt;br&gt;1、整体分为用户(SEC_USER)、角色(SEC_ROLE)、组织(SEC_ORGANIZATION)、菜单(SEC_MENU)四张大表。&lt;br&gt;2、增加了用户认证信息表(SEC_USER_CREDENTIAL--&amp;gt;目的不明，不知)、系统风格表(SEC_SYSSTYLE--&amp;gt;和角色关联)&lt;br&gt;3、增加修改了用户关系表(SEC_ROLE_PARTI),PARTI_TYPE--&amp;gt;1表示关系类型为用户(SEC_USER)，PARTI_TYPE--&amp;gt;2表示关系类型为菜单(SEC_MENU)&lt;br&gt;4、&lt;b&gt;将外键关联相关表去掉，原本角色和权限通过外键表关联，现在角色直接关联菜单或功能;&lt;br&gt;&lt;/b&gt;（原：角色管权限，权限管菜单&lt;br&gt;现：角色菜单直接关联，角色&amp;lt;--&amp;gt;菜单）&lt;br&gt;5、SEC_USER和SEC_USERINFO合并为一张表" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="Johj8OE83r-ualLdAYy1-5" value="描述:&lt;br&gt;1、整体分为用户(SEC_USER)、角色(SEC_ROLE)、组织(SEC_ORGANIZATION)、菜单(SEC_MENU)四张大表。&lt;br&gt;2、增加了用户认证信息表(SEC_USER_CREDENTIAL--&amp;gt;目的不明，不知)、系统风格表(SEC_SYSSTYLE--&amp;gt;和角色关联)&lt;br&gt;3、增加修改了用户关系表(SEC_ROLE_PARTI),PARTI_TYPE--&amp;gt;1表示关系类型为用户(SEC_USER)，PARTI_TYPE--&amp;gt;2表示关系类型为组织结构(SEC_MENU)&lt;br&gt;4、&lt;b&gt;将外键关联相关表去掉，原本角色和权限通过外键表关联，现在角色直接关联菜单或功能;&lt;br&gt;&lt;/b&gt;（原：角色管权限，权限管菜单&lt;br&gt;现：角色菜单直接关联，角色&amp;lt;--&amp;gt;菜单）&lt;br&gt;5、SEC_USER和SEC_USERINFO合并为一张表" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="180" width="330" height="200" as="geometry" />
         </mxCell>
         <mxCell id="Johj8OE83r-ualLdAYy1-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Johj8OE83r-ualLdAYy1-6" target="Johj8OE83r-ualLdAYy1-10">
